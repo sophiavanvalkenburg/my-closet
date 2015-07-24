@@ -12,6 +12,7 @@ import (
 var (
 	ErrInvalidId           = errors.New("Invalid Object Id")
 	ErrCouldNotRetrieveDoc = errors.New("Could Not Retrieve Object")
+	ErrCouldNotRemoveDoc   = errors.New("Could Not Remove Object")
 )
 
 type DB struct {
@@ -47,6 +48,20 @@ func (theDB *DB) FindById(collection string, id string, docPtr models.UniqueMode
 	if err := theDB.session.DB(theDB.name).C(collection).FindId(oid).One(docPtr); err != nil {
 		printDBError(err)
 		return ErrCouldNotRetrieveDoc
+	}
+
+	return nil
+}
+
+func (theDB *DB) RemoveById(collection string, id string) error {
+	if !bson.IsObjectIdHex(id) {
+		return ErrInvalidId
+	}
+	oid := bson.ObjectIdHex(id)
+
+	if err := theDB.session.DB(theDB.name).C(collection).RemoveId(oid); err != nil {
+		printDBError(err)
+		return ErrCouldNotRemoveDoc
 	}
 
 	return nil

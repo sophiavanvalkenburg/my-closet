@@ -78,24 +78,20 @@ func (itemc ItemController) ItemUpdateOne(w http.ResponseWriter, r *http.Request
 func (itemc ItemController) ItemDeleteOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	itemId := vars["itemId"]
-	//if err := itemc.db.FindById(itemc.collection, itemId, &item); err != nil {
-	//	switch err {
-	//	case db.ErrInvalidId:
-	//		w.WriteHeader(http.StatusBadRequest)
-	//	case db.ErrCouldNotRetrieveDoc:
-	//		w.WriteHeader(http.StatusNotFound)
-	//	default:
-	//		w.WriteHeader(http.StatusInternalServerError)
-	//	}
-	//	fmt.Fprintln(w, "Error:", err)
-	//	return
-	//}
+	if err := itemc.db.RemoveById(itemc.collection, itemId); err != nil {
+		switch err {
+		case db.ErrInvalidId:
+			w.WriteHeader(http.StatusBadRequest)
+		case db.ErrCouldNotRemoveDoc:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		fmt.Fprintln(w, "Error:", err)
+		return
+	}
 
-	//itemj, _ := json.Marshal(item)
-
-	//w.Header().Set("Content-Type", "application/json")
-	//w.WriteHeader(http.StatusOK)
-	//fmt.Fprintf(w, "%s", itemj)
-	fmt.Fprintf(w, "%s", itemId)
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Item %s deleted.\n", itemId)
 
 }
