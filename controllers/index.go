@@ -1,10 +1,10 @@
 package controllers
 
 import (
-    "fmt"
-    "net/http"
+	"fmt"
+	"net/http"
 )
 
-func Index(w http.ResponseWriter, r *http.Request){
-    fmt.Fprintln(w, "My Closet")
+func Index(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintln(w, "My Closet")
 }

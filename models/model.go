@@ -1,5 +1,5 @@
 package models
 
-type UniqueModel interface{
-    SetUniqueId()
+type UniqueModel interface {
+	SetUniqueId()
 }
