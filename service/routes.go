@@ -30,13 +30,13 @@ func NewRouter(itemc *controllers.ItemController) *mux.Router {
 		Route{
 			"ItemGet",
 			"GET",
-			"/items.json",
+			"/api/v1/items.json",
 			itemc.ItemsGetJson,
 		},
 		Route{
 			"ItemGetOne",
 			"GET",
-			"/items/{itemId}.json",
+			"/api/v1/items/{itemId}.json",
 			itemc.ItemsGetOneJson,
 		},
 		Route{
@@ -54,19 +54,19 @@ func NewRouter(itemc *controllers.ItemController) *mux.Router {
 		Route{
 			"ItemCreateOne",
 			"PUT",
-			"/items.json",
+			"/api/v1/items.json",
 			itemc.ItemsCreateOne,
 		},
 		Route{
 			"ItemUpdateOne",
 			"POST",
-			"/items/{itemId}.json",
+			"/api/v1/items/{itemId}.json",
 			itemc.ItemsUpdateOne,
 		},
 		Route{
 			"ItemDeleteOne",
 			"DELETE",
-			"/items/{itemId}.json",
+			"/api/v1/items/{itemId}.json",
 			itemc.ItemsDeleteOne,
 		},
 	}
