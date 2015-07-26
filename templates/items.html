@@ -1,0 +1,11 @@
+<html>
+    <head></head>
+    <body>
+        <h1>My Items</h1>
+        {{range .}}
+        <p><a href='/items/{{.Id.Hex}}'>{{.Name}} - {{.Color}} ({{.Brand}})</a></p>
+        {{else}}
+        <p>No items to display</p>
+        {{end}}
+    </body>
+</html>

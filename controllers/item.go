@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -19,9 +20,11 @@ func NewItemController(db *db.DB, collection string) *ItemController {
 	return &ItemController{db, collection}
 }
 
-func (itemc ItemController) ItemGet(w http.ResponseWriter, r *http.Request) {
-	items := models.Items{}
-	if err := itemc.db.FindItems(itemc.collection, 10, &items); err != nil {
+/** itemsGet - get all items **/
+
+func (itemc ItemController) ItemsGetJson(w http.ResponseWriter, r *http.Request) {
+	items, err := itemc.itemsGet(w)
+	if err != nil {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintln(w, "Error:", err)
 		return
@@ -35,11 +38,32 @@ func (itemc ItemController) ItemGet(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (itemc ItemController) ItemGetOne(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	itemId := vars["itemId"]
-	item := models.Item{}
-	if err := itemc.db.FindItemById(itemc.collection, itemId, &item); err != nil {
+func (itemc ItemController) ItemsGetHtml(w http.ResponseWriter, r *http.Request) {
+	items, err := itemc.itemsGet(w)
+	if err != nil {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintln(w, "Error:", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	t, _ := template.ParseFiles("templates/items.html")
+	t.Execute(w, items)
+}
+
+func (itemc ItemController) itemsGet(w http.ResponseWriter) (*models.Items, error) {
+	items := models.Items{}
+	if err := itemc.db.FindItems(itemc.collection, 10, &items); err != nil {
+		return &items, err
+	}
+	return &items, nil
+}
+
+/** itemsGetOne - get one item, given id **/
+
+func (itemc ItemController) ItemsGetOneJson(w http.ResponseWriter, r *http.Request) {
+	item, err := itemc.itemsGetOne(w, r)
+	if err != nil {
 		switch err {
 		case db.ErrInvalidId:
 			w.WriteHeader(http.StatusBadRequest)
@@ -59,7 +83,38 @@ func (itemc ItemController) ItemGetOne(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "%s\n", itemj)
 }
 
-func (itemc ItemController) ItemCreateOne(w http.ResponseWriter, r *http.Request) {
+func (itemc ItemController) ItemsGetOneHtml(w http.ResponseWriter, r *http.Request) {
+	item, err := itemc.itemsGetOne(w, r)
+	if err != nil {
+		switch err {
+		case db.ErrInvalidId:
+			w.WriteHeader(http.StatusBadRequest)
+		case db.ErrCouldNotRetrieveDoc:
+			w.WriteHeader(http.StatusNotFound)
+		default:
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+		fmt.Fprintln(w, "Error:", err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	t, _ := template.ParseFiles("templates/item.html")
+	t.Execute(w, item)
+}
+func (itemc ItemController) itemsGetOne(w http.ResponseWriter, r *http.Request) (*models.Item, error) {
+	vars := mux.Vars(r)
+	itemId := vars["itemId"]
+	item := models.Item{}
+	if err := itemc.db.FindItemById(itemc.collection, itemId, &item); err != nil {
+		return &item, err
+	}
+	return &item, nil
+}
+
+/** itemsCreateOne - create a new item **/
+
+func (itemc ItemController) ItemsCreateOne(w http.ResponseWriter, r *http.Request) {
 	item := models.Item{}
 
 	json.NewDecoder(r.Body).Decode(&item)
@@ -71,7 +126,9 @@ func (itemc ItemController) ItemCreateOne(w http.ResponseWriter, r *http.Request
 	fmt.Fprintf(w, "%s\n", itemj)
 }
 
-func (itemc ItemController) ItemUpdateOne(w http.ResponseWriter, r *http.Request) {
+/** itemsUpdateOne - update an item **/
+
+func (itemc ItemController) ItemsUpdateOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	itemId := vars["itemId"]
 	partialItem := models.Item{}
@@ -94,7 +151,9 @@ func (itemc ItemController) ItemUpdateOne(w http.ResponseWriter, r *http.Request
 	fmt.Fprintf(w, "Item %s udpated.\n", itemId)
 }
 
-func (itemc ItemController) ItemDeleteOne(w http.ResponseWriter, r *http.Request) {
+/** itemsDeleteOne - delete an item **/
+
+func (itemc ItemController) ItemsDeleteOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	itemId := vars["itemId"]
 	if err := itemc.db.RemoveById(itemc.collection, itemId); err != nil {

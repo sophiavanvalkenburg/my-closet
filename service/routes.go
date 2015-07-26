@@ -30,32 +30,44 @@ func NewRouter(itemc *controllers.ItemController) *mux.Router {
 		Route{
 			"ItemGet",
 			"GET",
+			"/items.json",
+			itemc.ItemsGetJson,
+		},
+		Route{
+			"ItemGetOne",
+			"GET",
+			"/items/{itemId}.json",
+			itemc.ItemsGetOneJson,
+		},
+		Route{
+			"ItemGet",
+			"GET",
 			"/items",
-			itemc.ItemGet,
+			itemc.ItemsGetHtml,
 		},
 		Route{
 			"ItemGetOne",
 			"GET",
 			"/items/{itemId}",
-			itemc.ItemGetOne,
+			itemc.ItemsGetOneHtml,
 		},
 		Route{
 			"ItemCreateOne",
 			"PUT",
-			"/items",
-			itemc.ItemCreateOne,
+			"/items.json",
+			itemc.ItemsCreateOne,
 		},
 		Route{
 			"ItemUpdateOne",
 			"POST",
-			"/items/{itemId}",
-			itemc.ItemUpdateOne,
+			"/items/{itemId}.json",
+			itemc.ItemsUpdateOne,
 		},
 		Route{
 			"ItemDeleteOne",
 			"DELETE",
-			"/items/{itemId}",
-			itemc.ItemDeleteOne,
+			"/items/{itemId}.json",
+			itemc.ItemsDeleteOne,
 		},
 	}
 

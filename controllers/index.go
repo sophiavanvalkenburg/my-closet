@@ -1,10 +1,12 @@
 package controllers
 
 import (
-	"fmt"
+	//"fmt"
+	"html/template"
 	"net/http"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "My Closet")
+	t, _ := template.ParseFiles("templates/index.html")
+	t.Execute(w, nil)
 }
