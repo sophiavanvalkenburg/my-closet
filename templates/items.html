@@ -2,10 +2,30 @@
     <head></head>
     <body>
         <h1>My Items</h1>
+        <!--<button id="toggle_add_items_form_btn">Add</button>-->
         {{range .}}
-        <p><a href='/items/{{.Id.Hex}}'>{{.Name}} - {{.Color}} ({{.Brand}})</a></p>
+        <p><a href="/items/{{.Id.Hex}}">{{.Name}} - {{.Color}} ({{.Brand}})</a></p>
         {{else}}
         <p>No items to display</p>
         {{end}}
+        <div id="add_item_div">
+            <form id="add_item_form">
+                <p>Name<br><input type="text" name="name"/></p>
+                <p>Brand<br><input type="text" name="brand"/></p>
+                <p>Color<br><input type="text" name="color"/></p>
+                <p>Type<br><input type="text" name="type"/></p>
+                <p>Size<br><input type="text" name="size"/></p>
+                <p>Tags<br><input type="text" name="tags"/></p>
+                <p>Reference Link<br><input type="text" name="reference_link"/></p>
+                <input action="" method="POST" type="submit" value="Add Item"/>
+            </form>
+        </div>
     </body>
+    <!--
+    <script>
+        function toggleAddItemsForm(){
+            
+        }
+    </script>
+    -->
 </html>
