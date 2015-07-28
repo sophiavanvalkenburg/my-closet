@@ -72,6 +72,7 @@ func NewRouter(itemc *controllers.ItemController) *mux.Router {
 	}
 
 	addRoutes(routes, router)
+	router.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("static/"))))
 	return router
 }
 

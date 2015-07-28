@@ -7,6 +7,7 @@ import (
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	t, _ := template.ParseFiles("templates/index.html")
-	t.Execute(w, nil)
+	t := template.New("index")
+	t.ParseFiles("templates/index.html", "templates/navbar.html")
+	t.ExecuteTemplate(w, "index", nil)
 }
