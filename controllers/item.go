@@ -47,8 +47,9 @@ func (itemc ItemController) ItemsGetHtml(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.WriteHeader(http.StatusOK)
-	t, _ := template.ParseFiles("templates/items.html")
-	t.Execute(w, items)
+	t := template.New("items")
+	t.ParseFiles("templates/items.html")
+	t.ExecuteTemplate(w, "items", items)
 }
 
 func (itemc ItemController) itemsGet(w http.ResponseWriter) (*models.Items, error) {
